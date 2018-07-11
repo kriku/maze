@@ -1,5 +1,8 @@
+import pc from '../engine';
 
-// INITIALIZATION
+import { BoxFactory } from './factory';
+import { generateMaze } from './generators';
+
 
 // create a PlayCanvas application
 var canvas = document.getElementById('application');
@@ -53,5 +56,5 @@ light.setEulerAngles(45, 0, 0);
 
 // register a global update event
 app.on('update', function (deltaTime) {
-    /* cube.rotate(10 * deltaTime, 20 * deltaTime, 30 * deltaTime); */
+    // cube.rotate(10 * deltaTime, 20 * deltaTime, 30 * deltaTime);
 });
