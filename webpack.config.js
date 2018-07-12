@@ -10,5 +10,10 @@ module.exports = {
             template: './src/index.html',
             filename: 'index.html'
         })
-    ]
+    ],
+    resolve: {
+        alias: {
+            engine: path.resolve(__dirname, 'engine/'),
+        }
+    }
 };

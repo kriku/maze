@@ -1,8 +1,11 @@
-import pc from '../engine';
+import pc from 'engine';
 
 import { BoxFactory } from './factory';
-import { generateMaze } from './generators';
+import { Maze } from './maze';
 
+const maze = new Maze({n: 10, m: 10});
+
+console.log(maze);
 
 // create a PlayCanvas application
 var canvas = document.getElementById('application');
@@ -27,12 +30,6 @@ camera.addComponent('camera', {
     fov: 55
 });
 
-
-
-const boxFactory = ({ x, y, z }) => {
-
-};
-
 // create box entity
 var cube = new pc.Entity('cube');
 cube.addComponent('model', {
@@ -56,5 +53,5 @@ light.setEulerAngles(45, 0, 0);
 
 // register a global update event
 app.on('update', function (deltaTime) {
-    // cube.rotate(10 * deltaTime, 20 * deltaTime, 30 * deltaTime);
+    cube.rotate(10 * deltaTime, 20 * deltaTime, 30 * deltaTime);
 });
