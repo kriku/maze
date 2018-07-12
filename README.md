@@ -29,13 +29,13 @@ npm install && npm run build
 Install dependencies:
 
 ```sh
+cd ../ # cd maze
 npm install
 ```
 
 Start webpack development server:
 
 ```sh
-cd ../ # cd maze
 npm start
 ```
 
