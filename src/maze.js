@@ -1,8 +1,11 @@
 class Cell {
-    constructor(x, y) {
+    constructor({ x = 0, y = 0 }) {
         this.x = x;
         this.y = y;
         this.visited = false;
+    }
+    get neighbors() {
+        return null;
     }
 }
 
@@ -14,7 +17,7 @@ export class Maze {
 
         for (let i = 0; i < n; i++) {
             for (let j = 0; j < m; j++) {
-                cells.push(new Cell(i, j));
+                cells.push(new Cell({ x: i, y: j }));
             }
         }
 
@@ -23,7 +26,6 @@ export class Maze {
 
         while (stack.length) {
             let cell = stack.pop();
-
         }
 
         // perimeter

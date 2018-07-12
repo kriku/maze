@@ -1,11 +1,14 @@
-# Build project
+ROBOT IN THE MAZE
+-----------------
+
+Game repository:
 
 ```sh
 git clone git@github.com:kriku/maze.git
 cd maze
 ```
 
-### Submodules init
+#### Submodules init
 
 To initialize playcanvas engine, run:
 
@@ -21,7 +24,7 @@ cd engine
 npm install && npm run build
 ```
 
-## Run project in development mode
+#### Run project in development mode
 
 Install dependencies:
 
