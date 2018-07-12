@@ -49,7 +49,7 @@ export class App {
         });
         // set up initial positions and orientations
         camera.setPosition(-2, -2, 4);
-        camera.setEulerAngles(60, 0, -45);
+        camera.setEulerAngles(65, 0, -45);
         this.app.root.addChild(camera);
     }
     // create directional light entity
