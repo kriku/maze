@@ -16,6 +16,13 @@ class Cell {
             _neighbors.push(cell);
         return this;
     }
+    get wall() {
+        let { x, y } = this;
+        return {
+            x: 2*x + 1,
+            y: 2*y + 1
+        };
+    }
 }
 
 export class Maze {
@@ -67,11 +74,13 @@ export class Maze {
             walls.push(row);
         }
 
+        // help functions
         const rndNeighbor = (neighbors) => {
             const index = Math.floor(Math.random() * neighbors.length);
             return neighbors[index];
         };
 
+        // help functions
         const wallBetween = (c1, c2) => {
             let x = (c1.x + c2.x + 1);
             let y = (c1.y + c2.y + 1);
@@ -96,8 +105,8 @@ export class Maze {
                 stack.push(next);
             }
         }
-
-        // perimeter
+        // open enter
+        walls[0][1] = 0;
 
         return walls;
     }
