@@ -1,8 +1,7 @@
 import pc from 'engine';
-import app from './app';
 
 export class BoxFactory {
-    spawnCubes() {
+    spawnCubes(app) {
         const { maze } = this;
         const { walls } = maze;
         for (let i = 0; i < walls.length; i++) {
@@ -12,14 +11,15 @@ export class BoxFactory {
                     this.spawnCube({
                         x: i,
                         y: j,
-                        z: 1
+                        z: 1,
+                        app
                     });
                 }
             }
         }
     }
 
-    spawnCube({ x, y, z }) {
+    spawnCube({ x, y, z, app }) {
         var entity = new pc.Entity();
 
         // Add a new Model Component and add it to the Entity.
@@ -35,7 +35,6 @@ export class BoxFactory {
         entity.setLocalPosition(x, y, z);
 
         // Add to the Hierarchy
-        console.log(app);
         app.root.addChild(entity);
 
         // Store in a list for some random duration before deleting
@@ -51,6 +50,5 @@ export class BoxFactory {
     constructor(maze) {
         this.maze = maze;
         this.entities = [];
-        this.spawnCubes();
     }
 }

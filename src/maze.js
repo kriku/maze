@@ -19,8 +19,8 @@ class Cell {
     get wall() {
         let { x, y } = this;
         return {
-            x: 2*x + 1,
-            y: 2*y + 1
+            x: 2 * x + 1,
+            y: 2 * y + 1
         };
     }
 }
@@ -62,10 +62,11 @@ export class Maze {
         const { n, m, cells } = this;
 
         const walls = [];
-        for (let i = 0; i < 2*n + 1; i++) {
+        for (let i = 0; i < 2 * n + 1; i++) {
             const row = [];
-            for (let j = 0; j < 2*m + 1; j++) {
-                if (i%2 && j%2) {
+            for (let j = 0; j < 2 * m + 1; j++) {
+                // cell
+                if (i % 2 && j % 2) {
                     row.push(0);
                     continue;
                 }
@@ -90,8 +91,13 @@ export class Maze {
         // DFS loop implementation
         let stack = [];
         stack.push(cells[0][0]);
+        let max_stack = 0;
 
         while (stack.length) {
+            if (stack.length > max_stack) {
+                this.start = stack[stack.length - 1];
+                max_stack = stack.length;
+            }
             let cell = stack.pop();
             cell.visited = true;
 
@@ -100,6 +106,7 @@ export class Maze {
             if (candidates.length) {
                 stack.push(cell);
                 let next = rndNeighbor(candidates);
+                // remove wall
                 let { x, y } = wallBetween(cell, next);
                 walls[x][y] = 0;
                 stack.push(next);
@@ -111,3 +118,5 @@ export class Maze {
         return walls;
     }
 }
+
+export default Maze;

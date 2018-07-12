@@ -1,14 +1,7 @@
 import pc from 'engine';
 
-import { BoxFactory } from './factory';
-import { Maze } from './maze';
-import app from './app';
+import App from './app';
 
 // create a PlayCanvas application
-var canvas = document.getElementById('application');
+const game = new App('application');
 
-// create maze and walls from boxes
-const maze = new Maze({n: 40, m: 40});
-const walls = new BoxFactory(maze);
-
-app.start();
