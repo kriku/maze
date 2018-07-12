@@ -4,6 +4,7 @@ import { BoxFactory } from './factory';
 import { Maze } from './maze';
 
 const maze = new Maze({n: 10, m: 10});
+window.maze = maze;
 
 console.log(maze);
 
