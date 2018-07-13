@@ -22,6 +22,7 @@ export default class Robot {
         this.addControls();
 
         entity.setLocalPosition(0, 0, 2);
+        entity.addComponent('collision');
 
         const e = entity.getLocalEulerAngles();
         entity.setLocalEulerAngles(e.x + 90, e.y, e.z);

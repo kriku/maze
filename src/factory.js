@@ -20,13 +20,15 @@ export class BoxFactory {
     }
 
     spawnCube({ x, y, z, app }) {
-        var entity = new pc.Entity();
+        const entity = new pc.Entity();
 
         // Add a new Model Component and add it to the Entity.
-        entity.addComponent("model", {
+        entity.addComponent('model', {
             type: 'box',
             isStatic: true
         });
+
+        entity.addComponent('collision');
 
         // set material
         // entity.model.material = this.material.resource;

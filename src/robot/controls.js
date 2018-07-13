@@ -9,13 +9,23 @@ export default class RobotControls {
         this.app.keyboard = keyboard;
         this.app.keyboard.on(pc.EVENT_KEYDOWN, this.onKeyDown, this);
         this.app.keyboard.on(pc.EVENT_KEYUP, this.onKeyUp, this);
+        this.pressed = {};
+    }
+
+    get isRun() {
+        const keys = [pc.KEY_UP, pc.KEY_DOWN, pc.KEY_LEFT, pc.KEY_RIGHT];
+        return keys.map(key => this.pressed[key]).filter(v => v).length;
     }
 
     onKeyUp(event) {
         // Check event.key to detect which key has been pressed
         switch (event.key) {
         case pc.KEY_UP:
-            this.robot.idle();
+        case pc.KEY_DOWN:
+        case pc.KEY_LEFT:
+        case pc.KEY_RIGHT:
+            this.pressed[event.key] = false;
+            if (!this.isRun) this.robot.idle();
             break;
         default:
             //
@@ -30,7 +40,19 @@ export default class RobotControls {
         // Check event.key to detect which key has been pressed
         switch (event.key) {
         case pc.KEY_UP:
+        case pc.KEY_DOWN:
+        case pc.KEY_LEFT:
+        case pc.KEY_RIGHT:
+            this.pressed[event.key] = true;
             this.robot.run();
+            break;
+        case pc.KEY_UP:
+            break;
+        case pc.KEY_DOWN:
+            break;
+        case pc.KEY_LEFT:
+            break;
+        case pc.KEY_RIGHT:
             break;
         default:
             //
