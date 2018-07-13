@@ -26,7 +26,6 @@ export default class RobotControls {
         case pc.KEY_RIGHT:
             this.pressed[event.key] = false;
             if (!this.isRun) this.robot.idle();
-            break;
         default:
             //
         }
@@ -40,19 +39,24 @@ export default class RobotControls {
         // Check event.key to detect which key has been pressed
         switch (event.key) {
         case pc.KEY_UP:
-        case pc.KEY_DOWN:
-        case pc.KEY_LEFT:
-        case pc.KEY_RIGHT:
+            this.robot.runUp();
             this.pressed[event.key] = true;
             this.robot.run();
             break;
-        case pc.KEY_UP:
-            break;
         case pc.KEY_DOWN:
+            this.robot.runDown();
+            this.pressed[event.key] = true;
+            this.robot.run();
             break;
         case pc.KEY_LEFT:
+            this.robot.runLeft();
+            this.pressed[event.key] = true;
+            this.robot.run();
             break;
         case pc.KEY_RIGHT:
+            this.robot.runRight();
+            this.pressed[event.key] = true;
+            this.robot.run();
             break;
         default:
             //

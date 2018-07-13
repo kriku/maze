@@ -11,9 +11,10 @@ export class App {
         this.fill();
         this.resizeHook();
 
-        // this.addCube();
-        this.addRobot();
+        this.addFloor();
         this.addMaze();
+
+        this.addRobot();
 
         this.addCamera();
         this.addLight();
@@ -44,45 +45,63 @@ export class App {
         const camera = new pc.Entity('camera');
         camera.addComponent('camera', {
             clearColor: new pc.Color(0.1, 0.1, 0.1),
-            nearClip: 1,
-            farClip: 100,
+            // nearClip: 1,
+            // farClip: 100,
             fov: 55
         });
         // set up initial positions and orientations
-        camera.setPosition(-2, -2, 4);
-        camera.setEulerAngles(65, 0, -45);
+        camera.setPosition(10, 10, 24);
+        camera.setEulerAngles(-45, 0, 0);
         this.app.root.addChild(camera);
     }
 
     // create and add directional light entity
     addLight() {
         const light = new pc.Entity('light');
-        light.addComponent('light');
+        light.addComponent('light', {
+            castShadows: true
+        });
         // set up initial positions and orientations
-        light.setEulerAngles(225, 135, 40);
-        // light.setEulerAngles(45, 0, 0);
+        // light.setEulerAngles(20, 180, 30);
+        light.setEulerAngles(-30, -145, -30);
         this.app.root.addChild(light);
     }
 
     // create and add box entity
-    addCube() {
-        const cube = new pc.Entity('cube');
-        cube.addComponent('model', {
-            type: 'box'
+    addFloor() {
+        const floor = new pc.Entity();
+        floor.addComponent('model', {
+            type: 'box',
+            castShadows: true
         });
-        // cube.setLocalPosition(0, 0, 2);
-        this.app.root.addChild(cube);
+        floor.setLocalScale(40, 1, 40);
+        floor.setLocalPosition(10, 0, 10);
+
+        // add a rigidbody component so that other objects collide with it
+        floor.addComponent("rigidbody", {
+            type: "static",
+            restitution: 0.5
+        });
+
+        // add a collision component
+        floor.addComponent("collision", {
+            type: "box",
+            halfExtents: new pc.Vec3(20, 0.5, 20)
+        });
+
+        this.app.root.addChild(floor);
     }
 
     // create and add robot
     addRobot() {
-        const robot = new Robot(this.app);
+        const robot = new Robot(this.app, this.maze.start.wall);
     }
 
     // create and spawn maze
     addMaze() {
         // create maze and walls from boxes
         const maze = new Maze({n: 10, m: 10});
+        this.maze = maze;
         const walls = new BoxFactory(maze);
         walls.spawnCubes(this.app);
     }

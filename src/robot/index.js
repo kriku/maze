@@ -8,7 +8,7 @@ import Playbot_run from 'engine/examples/assets/Playbot/Playbot_run.json';
 // import PlaybotMapping from 'engine/examples/assets/Playbot/Playbot.mapping.json';
 
 export default class Robot {
-    constructor(app) {
+    constructor(app, start) {
         this.app = app;
 
         const entity = new pc.Entity();
@@ -16,16 +16,26 @@ export default class Robot {
         this.isRun = false;
 
         entity.setName('BadRobot');
+        entity.setLocalPosition(start.x, 2, start.y);
 
         this.addModel();
         this.addAnimation();
+
+        entity.addComponent('rigidbody', {
+            type: 'dynamic',
+            friction: 0.7,
+            reduction: 0,
+            mass: 5
+        });
+
+        entity.addComponent('collision', {
+            type: 'cylinder',
+            height: 0.2,
+            radius: 0.3
+        });
+        // entity.rigidbody.body = this.model;
+
         this.addControls();
-
-        entity.setLocalPosition(0, 0, 2);
-        entity.addComponent('collision');
-
-        const e = entity.getLocalEulerAngles();
-        entity.setLocalEulerAngles(e.x + 90, e.y, e.z);
 
         app.root.addChild(entity);
         window.badRobot = entity;
@@ -36,6 +46,9 @@ export default class Robot {
         const { entity } = this;
         entity.addComponent('model');
         entity.model.model = this.model;
+
+        const e = entity.getLocalEulerAngles();
+        entity.setLocalEulerAngles(e.x, e.y - 180, e.z);
     }
 
     addAnimation() {
@@ -65,6 +78,26 @@ export default class Robot {
     // Stop running then start running in 1s
     idle() {
         this.entity.animation.play("idle", 0.2);
+        // this.entity.rigidbody.linearVelocity = pc.Vec3.ZERO;
         this.isRun = false;
+    }
+
+    runTo(vec3) {
+        // this.entity.rigidbody.linearVelocity = vec3;
+        this.entity.rigidbody.applyImpulse(vec3);
+        // this.entity.rigidbody.applyForce(vec3);
+    }
+
+    runUp() {
+        this.runTo(pc.Vec3.FORWARD);
+    }
+    runDown() {
+        this.runTo(pc.Vec3.BACK);
+    }
+    runLeft() {
+        this.runTo(pc.Vec3.LEFT);
+    }
+    runRight() {
+        this.runTo(pc.Vec3.RIGHT);
     }
 }

@@ -10,8 +10,8 @@ export class BoxFactory {
                 if (walls[i][j]) {
                     this.spawnCube({
                         x: i,
-                        y: j,
-                        z: 1,
+                        y: 1,
+                        z: j,
                         app
                     });
                 }
@@ -25,10 +25,18 @@ export class BoxFactory {
         // Add a new Model Component and add it to the Entity.
         entity.addComponent('model', {
             type: 'box',
-            isStatic: true
+            castShadows: true
         });
 
-        entity.addComponent('collision');
+        entity.addComponent('rigidbody', {
+            type: 'static',
+            mass: 1
+        });
+
+        entity.addComponent("collision", {
+            type: "box",
+            halfExtents: new pc.Vec3(0.5, 0.5, 0.5)
+        });
 
         // set material
         // entity.model.material = this.material.resource;

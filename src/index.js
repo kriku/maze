@@ -3,5 +3,7 @@ import pc from 'engine';
 import App from './app';
 
 // create a PlayCanvas application
-const game = new App('application');
+const app = new App('application');
 
+window.pc = pc;
+window.app = app;

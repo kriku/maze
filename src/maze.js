@@ -63,16 +63,10 @@ export class Maze {
 
         const walls = [];
         for (let i = 0; i < 2 * n + 1; i++) {
-            const row = [];
+            walls[i] = [];
             for (let j = 0; j < 2 * m + 1; j++) {
-                // cell
-                if (i % 2 && j % 2) {
-                    row.push(0);
-                    continue;
-                }
-                row.push(1);
+                walls[i][j] = (i % 2 && j % 2)? 0 : 1;
             }
-            walls.push(row);
         }
 
         // help functions
