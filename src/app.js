@@ -1,7 +1,7 @@
 import pc from 'engine';
 import { BoxFactory } from './factory';
 import Maze from './maze';
-import Robot from './robot';
+import Robot from './robot/';
 
 export class App {
     constructor(id) {
@@ -38,7 +38,8 @@ export class App {
             // this.cube.rotate(10 * deltaTime, 20 * deltaTime, 30 * deltaTime);
         });
     }
-    // create camera entity
+
+    // create and add camera entity
     addCamera() {
         const camera = new pc.Entity('camera');
         camera.addComponent('camera', {
@@ -52,7 +53,8 @@ export class App {
         camera.setEulerAngles(65, 0, -45);
         this.app.root.addChild(camera);
     }
-    // create directional light entity
+
+    // create and add directional light entity
     addLight() {
         const light = new pc.Entity('light');
         light.addComponent('light');
@@ -61,7 +63,8 @@ export class App {
         // light.setEulerAngles(45, 0, 0);
         this.app.root.addChild(light);
     }
-    // create box entity
+
+    // create and add box entity
     addCube() {
         const cube = new pc.Entity('cube');
         cube.addComponent('model', {
@@ -71,13 +74,15 @@ export class App {
         this.app.root.addChild(cube);
     }
 
+    // create and add robot
     addRobot() {
         const robot = new Robot(this.app);
     }
 
+    // create and spawn maze
     addMaze() {
         // create maze and walls from boxes
-        const maze = new Maze({n: 40, m: 40});
+        const maze = new Maze({n: 10, m: 10});
         const walls = new BoxFactory(maze);
         walls.spawnCubes(this.app);
     }
