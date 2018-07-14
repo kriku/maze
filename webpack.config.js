@@ -13,7 +13,7 @@ module.exports = {
     ],
     resolve: {
         alias: {
-            engine: path.resolve(__dirname, 'engine/'),
+            engine: path.resolve(__dirname, 'engine/')
         }
     }
 };
