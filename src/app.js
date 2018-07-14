@@ -1,83 +1,89 @@
 import pc from 'engine';
-import { BoxFactory } from './factory';
 import Maze from './maze';
-import Robot from './robot/';
+import RobotFetus from './robot';
+import RobotMovements from './control';
+import Playbot from 'engine/examples/assets/Playbot/Playbot.json';
+import Playbot_idle from 'engine/examples/assets/Playbot/Playbot_idle.json';
+import Playbot_run from 'engine/examples/assets/Playbot/Playbot_run.json';
 
-export class App {
-    constructor(id, debugId) {
-        const canvas = document.getElementById(id);
-        const debugDOM = document.getElementById(debugId);
-        this.debug = debugDOM;
-        this.debugInfo = "Debug information";
-        this.app = new pc.Application(canvas, {});
-        this.app.start();
-        this.fill();
-        this.resizeHook();
 
-        this.addFloor();
-        this.addMaze();
-
-        this.addRobot();
-
-        this.addCamera();
-        this.addLight();
-
-        this.updateHook();
+export default class RobotInTheMazeGame {
+    constructor(canvas) {
+        this.app = new pc.Application(canvas, {
+            keyboard: new pc.Keyboard(window)
+        });
     }
-    // fill the available space at full resolution
-    fill() {
+
+    start() {
+        this.app.start();
+
+        this.setupCanvas();
+        this.ensureCanvasIsFullWidth();
+        this.setupGame();
+    }
+
+    setupCanvas() {
         this.app.setCanvasFillMode(pc.FILLMODE_FILL_WINDOW);
         this.app.setCanvasResolution(pc.RESOLUTION_AUTO);
     }
-    // ensure canvas is resized when window changes size
-    resizeHook() {
-        window.addEventListener('resize', function() {
-            this.app.resizeCanvas();
-        });
+
+    ensureCanvasIsFullWidth() {
+        window.addEventListener('resize', () => this.app.resizeCanvas());
     }
 
-    // register a global update event
-    updateHook() {
-        this.app.on('update', (dt) => {
-            this.robot.update(dt);
-            const message = {};
-            message.linearVelocity = this.robot.entity.rigidbody.linearVelocity;
-            message.localRotation = this.robot.entity.localRotation;
-            message.eulerAngles = this.robot.entity.getLocalEulerAngles();
-            message.turnVec = this.robot.turnVec;
-            this.debug.innerHTML = JSON.stringify(message, null, 2);
-        });
+    setupGame() {
+        const maze = new Maze({n: 10, m: 10});
+        const entities = [
+            this.floor(),
+            this.camera(),
+            this.light(),
+            this.walls(maze.walls),
+            this.robotAt(maze.mostDistantPoint())];
+
+        entities.forEach(entity => this.app.root.addChild(entity));
     }
 
-    // create and add camera entity
-    addCamera() {
+    robotAt(position) {
+        const fetus = new RobotFetus();
+        const {app: {loader}} = this;
+        return fetus
+            .atPosition(position)
+            .withModel(loader.open('model', Playbot, '.json'))
+            .withAnimations({
+                idle: loader.open('animation', Playbot_idle),
+                run: loader.open('animation', Playbot_run)
+            })
+            .withScript(RobotMovements({
+                name: 'robotMovements',
+                idleAnimation: 'idle',
+                runAnimation: 'run'
+            }))
+            .birth();
+    }
+
+    camera() {
         const camera = new pc.Entity('camera');
         camera.addComponent('camera', {
             clearColor: new pc.Color(0.1, 0.1, 0.1),
-            // nearClip: 1,
-            // farClip: 100,
             fov: 55
         });
-        // set up initial positions and orientations
         camera.setPosition(10, 10, 24);
         camera.setEulerAngles(-45, 0, 0);
-        this.app.root.addChild(camera);
+
+        return camera;
     }
 
-    // create and add directional light entity
-    addLight() {
+    light() {
         const light = new pc.Entity('light');
         light.addComponent('light', {
             castShadows: true
         });
-        // set up initial positions and orientations
-        // light.setEulerAngles(20, 180, 30);
         light.setEulerAngles(-30, -145, -40);
-        this.app.root.addChild(light);
+
+        return light;
     }
 
-    // create and add box entity
-    addFloor() {
+    floor() {
         const floor = new pc.Entity();
         floor.addComponent('model', {
             type: 'box',
@@ -86,38 +92,48 @@ export class App {
         floor.setLocalScale(40, 1, 40);
         floor.setLocalPosition(10, 0, 10);
 
-        // add a rigidbody component so that other objects collide with it
         floor.addComponent("rigidbody", {
             type: "static",
             restitution: 0.5
         });
 
-        // add a collision component
         floor.addComponent("collision", {
             type: "box",
             halfExtents: new pc.Vec3(20, 0.5, 20)
         });
 
-        this.app.root.addChild(floor);
+        return floor;
     }
 
-    // create and add robot
-    addRobot() {
-        let start = { x: 10, y: 10 };
-        const { maze } = this;
-        if (maze) start = this.maze.start.wall;
-        this.robot = new Robot(this.app, start);
+    box(x, y, z) {
+        const entity = new pc.Entity();
+        entity.addComponent('model', {
+            type: 'box',
+            castShadows: true
+        });
+        entity.addComponent('rigidbody', {
+            type: 'static',
+        });
+        entity.addComponent("collision", {
+            type: "box",
+            halfExtents: new pc.Vec3(0.5, 0.5, 0.5)
+        });
+        entity.setLocalPosition(x, y, z);
+
+        return entity;
     }
 
-    // create and spawn maze
-    addMaze() {
-        // create maze and walls from boxes
-        const maze = new Maze({n: 10, m: 10});
-        this.maze = maze;
-        const walls = new BoxFactory(maze);
-        walls.spawnCubes(this.app);
-    }
+    walls(walls) {
+        const mazeEntity = new pc.Entity('walls');
+        for (let i = 0; i < walls.length; i++) {
+            const row = walls[i];
+            for (let j = 0; j < row.length; j++) {
+                if (walls[i][j]) {
+                    mazeEntity.addChild(this.box(i, 1, j));
+                }
+            }
+        }
 
+        return mazeEntity;
+    }
 }
-
-export default App;

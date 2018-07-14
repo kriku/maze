@@ -26,7 +26,6 @@ class Cell {
 }
 
 export class Maze {
-    // as arguments map with size [n x m], h box up, with some scale
     constructor({ n = 100, m = 100 }) {
         this.n = n;
         this.m = m;
@@ -110,6 +109,10 @@ export class Maze {
         walls[0][1] = 0;
 
         return walls;
+    }
+
+    mostDistantPoint() {
+        return this.start.wall;
     }
 }
 
