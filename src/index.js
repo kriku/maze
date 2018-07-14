@@ -1,8 +1,4 @@
-import pc from 'engine';
-import App from './app';
+import RobotInTheMazeGame from './app';
 
-// create a PlayCanvas application
-const app = new App('application', 'debug');
-
-window.pc = pc;
-window.app = app;
+const game = new RobotInTheMazeGame(document.getElementById('application'));
+game.start();
