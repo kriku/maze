@@ -1,5 +1,4 @@
 import pc from 'engine';
-
 import App from './app';
 
 // create a PlayCanvas application
