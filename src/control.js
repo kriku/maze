@@ -14,22 +14,18 @@ export default ({name, idleAnimation, runAnimation}) => {
             [pc.KEY_SPACE]: pc.Vec3.BACK
         };
 
-        const force = new pc.Vec3();
-
-        Object.keys(forces).forEach(key => {
-            if (app.keyboard.isPressed(parseInt(key))) {
-                force.add(forces[key]);
-            }
-        });
+        const force = Object.keys(forces)
+            .filter(key => app.keyboard.isPressed(parseInt(key)))
+            .reduce((acc, key) => acc.add(forces[key]),
+                new pc.Vec3());
 
         this.entity.rigidbody.applyForce(force.scale(50));
 
         if (this.entity.animation) {
             const isIdle = force.equals(pc.Vec3.ZERO);
             const animation = isIdle ? idleAnimation : runAnimation;
-            if (this.entity.animation.currAnim !== animation) {
-                this.entity.animation.play(animation, 0.2);
-            }
+            const animationChanged = this.entity.animation.currAnim !== animation;
+            animationChanged && this.entity.animation.play(animation, 0.2);
         }
     };
 
