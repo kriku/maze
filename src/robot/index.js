@@ -23,8 +23,9 @@ export default class Robot {
 
         entity.addComponent('rigidbody', {
             type: 'dynamic',
-            friction: 0.7,
-            reduction: 0,
+            friction: 0.8,
+            reduction: 0.5,
+            linearDamping: 0.5,
             mass: 5
         });
 
@@ -38,7 +39,7 @@ export default class Robot {
         this.addControls();
 
         app.root.addChild(entity);
-        window.badRobot = entity;
+        // window.badRobot = entity;
     }
 
     addModel() {
@@ -49,6 +50,7 @@ export default class Robot {
 
         const e = entity.getLocalEulerAngles();
         entity.setLocalEulerAngles(e.x, e.y - 180, e.z);
+        window.BadRobot = this;
     }
 
     addAnimation() {
@@ -67,6 +69,23 @@ export default class Robot {
         this.controls = new RobotControls(this);
     }
 
+    update(dt) {
+        const { controls: { pressed, keys, forces }} = this;
+        keys.forEach(key => {
+            if (pressed[key]) {
+                this.runTo(forces[key]);
+            }
+        });
+        const { entity } = this;
+        const { rigidbody } = entity;
+        const velocity = rigidbody.linearVelocity;
+        const angle = entity.getLocalEulerAngles();
+        const turnVec = new pc.Vec3().cross(velocity, angle).normalize();
+        const normal = pc.Vec3.UP;
+        this.turnVec = turnVec.project(normal);
+        // this.turnTo(this.turnVec);
+    }
+
     // Start running then stop in 1s
     run() {
         if (!this.isRun) {
@@ -83,21 +102,11 @@ export default class Robot {
     }
 
     runTo(vec3) {
-        // this.entity.rigidbody.linearVelocity = vec3;
         this.entity.rigidbody.applyImpulse(vec3);
-        // this.entity.rigidbody.applyForce(vec3);
     }
 
-    runUp() {
-        this.runTo(pc.Vec3.FORWARD);
-    }
-    runDown() {
-        this.runTo(pc.Vec3.BACK);
-    }
-    runLeft() {
-        this.runTo(pc.Vec3.LEFT);
-    }
-    runRight() {
-        this.runTo(pc.Vec3.RIGHT);
+    turnTo(vec3) {
+        // this.entity.rigidbody
+        this.entity.rigidbody.applyTorqueImpulse(vec3);
     }
 }

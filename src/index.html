@@ -2,18 +2,26 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>PlayCanvas Hello Cube</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no' />
+    <title>PlayCanvas Robot in the Maze</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
     <script src="http://code.playcanvas.com/ammo.751ec5f.js"></script>
     <style>
         body {
             margin: 0;
             overflow: hidden;
         }
+        #debug {
+            position: absolute;
+            color: white;
+            top: 1em;
+            right: 1em;
+            padding: 1em;
+        }
     </style>
 </head>
 <body>
-    <canvas id='application'></canvas>
+    <canvas id="application"></canvas>
+    <pre id="debug"></pre>
     <script src="main.js"></script>
 </body>
 </html>

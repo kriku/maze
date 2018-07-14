@@ -29,8 +29,7 @@ export class BoxFactory {
         });
 
         entity.addComponent('rigidbody', {
-            type: 'static',
-            mass: 1
+            type: 'static'
         });
 
         entity.addComponent("collision", {

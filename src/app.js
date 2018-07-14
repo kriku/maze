@@ -4,8 +4,11 @@ import Maze from './maze';
 import Robot from './robot/';
 
 export class App {
-    constructor(id) {
+    constructor(id, debugId) {
         const canvas = document.getElementById(id);
+        const debugDOM = document.getElementById(debugId);
+        this.debug = debugDOM;
+        this.debugInfo = "Debug information";
         this.app = new pc.Application(canvas, {});
         this.app.start();
         this.fill();
@@ -35,8 +38,14 @@ export class App {
 
     // register a global update event
     updateHook() {
-        this.app.on('update', function (deltaTime) {
-            // this.cube.rotate(10 * deltaTime, 20 * deltaTime, 30 * deltaTime);
+        this.app.on('update', (dt) => {
+            this.robot.update(dt);
+            const message = {};
+            message.linearVelocity = this.robot.entity.rigidbody.linearVelocity;
+            message.localRotation = this.robot.entity.localRotation;
+            message.eulerAngles = this.robot.entity.getLocalEulerAngles();
+            message.turnVec = this.robot.turnVec;
+            this.debug.innerHTML = JSON.stringify(message, null, 2);
         });
     }
 
@@ -63,7 +72,7 @@ export class App {
         });
         // set up initial positions and orientations
         // light.setEulerAngles(20, 180, 30);
-        light.setEulerAngles(-30, -145, -30);
+        light.setEulerAngles(-30, -145, -40);
         this.app.root.addChild(light);
     }
 
@@ -94,7 +103,10 @@ export class App {
 
     // create and add robot
     addRobot() {
-        const robot = new Robot(this.app, this.maze.start.wall);
+        let start = { x: 10, y: 10 };
+        const { maze } = this;
+        if (maze) start = this.maze.start.wall;
+        this.robot = new Robot(this.app, start);
     }
 
     // create and spawn maze

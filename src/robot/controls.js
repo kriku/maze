@@ -10,6 +10,11 @@ export default class RobotControls {
         this.app.keyboard.on(pc.EVENT_KEYDOWN, this.onKeyDown, this);
         this.app.keyboard.on(pc.EVENT_KEYUP, this.onKeyUp, this);
         this.pressed = {};
+        this.keys = [pc.KEY_UP, pc.KEY_DOWN, pc.KEY_LEFT, pc.KEY_RIGHT];
+        this.vecs = [pc.Vec3.FORWARD, pc.Vec3.BACK, pc.Vec3.LEFT, pc.Vec3.RIGHT];
+        let forces = {};
+        this.keys.forEach((key, i) => forces[key] = this.vecs[i]);
+        this.forces = forces;
     }
 
     get isRun() {
@@ -39,22 +44,9 @@ export default class RobotControls {
         // Check event.key to detect which key has been pressed
         switch (event.key) {
         case pc.KEY_UP:
-            this.robot.runUp();
-            this.pressed[event.key] = true;
-            this.robot.run();
-            break;
         case pc.KEY_DOWN:
-            this.robot.runDown();
-            this.pressed[event.key] = true;
-            this.robot.run();
-            break;
         case pc.KEY_LEFT:
-            this.robot.runLeft();
-            this.pressed[event.key] = true;
-            this.robot.run();
-            break;
         case pc.KEY_RIGHT:
-            this.robot.runRight();
             this.pressed[event.key] = true;
             this.robot.run();
             break;
