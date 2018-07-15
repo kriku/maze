@@ -1,10 +1,9 @@
 class Cell {
-    constructor({ x, y }) {
+    constructor({ x, z }) {
         this.x = x;
-        this.y = y;
+        this.z = z;
         this.visited = false;
         this._neighbors = [];
-        // this.walls = [1,1,1].map(i => [1, 1, 1]);
     }
 
     get neighbors() {
@@ -15,13 +14,6 @@ class Cell {
         if (!_neighbors.includes(cell) && this != cell)
             _neighbors.push(cell);
         return this;
-    }
-    get wall() {
-        let { x, y } = this;
-        return {
-            x: 2 * x + 1,
-            y: 2 * y + 1
-        };
     }
 }
 
@@ -38,20 +30,18 @@ export class Maze {
         const { n, m } = this;
         const cells = [];
         for (let i = 0; i < n; i++) {
-            const row = [];
+            cells[i] = [];
             for (let j = 0; j < m; j++) {
-                let cell = new Cell({ x: i, y: j, id: Math.random() });
+                cells[i][j] = new Cell({ x: i, z: j });
                 if (j) {
-                    cell.neighbors = row[j-1];
-                    row[j-1].neighbors = cell;
+                    cells[i][j].neighbors = cells[i][j-1];
+                    cells[i][j-1].neighbors = cells[i][j];
                 }
                 if (i) {
-                    cell.neighbors = cells[i-1][j];
-                    cells[i-1][j].neighbors = cell;
+                    cells[i][j].neighbors = cells[i-1][j];
+                    cells[i-1][j].neighbors = cells[i][j];
                 }
-                row.push(cell);
             }
-            cells.push(row);
         }
         return cells;
     }
@@ -74,11 +64,10 @@ export class Maze {
             return neighbors[index];
         };
 
-        // help functions
         const wallBetween = (c1, c2) => {
             let x = (c1.x + c2.x + 1);
-            let y = (c1.y + c2.y + 1);
-            return {x, y};
+            let z = (c1.z + c2.z + 1);
+            return {x, z};
         };
 
         // DFS loop implementation
@@ -88,7 +77,7 @@ export class Maze {
 
         while (stack.length) {
             if (stack.length > max_stack) {
-                this.start = stack[stack.length - 1];
+                this.mostDistantCell = stack[stack.length - 1];
                 max_stack = stack.length;
             }
             let cell = stack.pop();
@@ -100,8 +89,8 @@ export class Maze {
                 stack.push(cell);
                 let next = rndNeighbor(candidates);
                 // remove wall
-                let { x, y } = wallBetween(cell, next);
-                walls[x][y] = 0;
+                let { x, z } = wallBetween(cell, next);
+                walls[x][z] = 0;
                 stack.push(next);
             }
         }
@@ -112,7 +101,10 @@ export class Maze {
     }
 
     mostDistantPoint() {
-        return this.start.wall;
+        return {
+            x: this.mostDistantCell.x * 2 + 1,
+            z: this.mostDistantCell.z * 2 + 1
+        };
     }
 }
 
