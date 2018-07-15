@@ -21,6 +21,7 @@ export default class RobotFetus {
             friction: 0.8,
             reduction: 0.5,
             linearDamping: 0.5,
+            angularDamping: 10,
             mass: 5
         });
 
@@ -34,7 +35,7 @@ export default class RobotFetus {
     }
 
     atPosition(position) {
-        this.entity.setLocalPosition(position.x, 2, position.y);
+        this.entity.setLocalPosition(position.x, 2, position.z);
 
         return this;
     }
@@ -44,12 +45,10 @@ export default class RobotFetus {
         entity.addComponent('model');
         entity.model.model = model;
 
-        const localAngles = entity.getLocalEulerAngles();
-        entity.setLocalEulerAngles(localAngles.x, localAngles.y - 180, localAngles.z);
+        // const localAngles = entity.getLocalEulerAngles();
+        // entity.setLocalEulerAngles(localAngles.x, localAngles.y, localAngles.z);
 
-        if (entity.animation) {
-            entity.animation.setModel(model)
-        }
+        entity.animation && entity.animation.setModel(model);
 
         return this;
     }
@@ -78,5 +77,5 @@ export default class RobotFetus {
 
 function pipe() {
     return Array.prototype.splice.call(arguments, 1)
-        .reduce((acc, v) => v(acc), arguments[0])
+        .reduce((acc, v) => v(acc), arguments[0]);
 }
