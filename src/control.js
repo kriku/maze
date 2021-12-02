@@ -19,6 +19,20 @@ export default ({name, idleAnimation, runAnimation}) => {
                 new pc.Vec3());
 
         force.normalize();
+        if (!force.equals(pc.Vec3.ZERO)) {
+
+            const currentDir = entity.getRotation().transformVector(pc.Vec3.BACK);
+
+            const dot = force.dot(currentDir);
+            const axis = new pc.Vec3().cross(force, currentDir);
+            const clockWise = -Math.sign(axis.y);
+            const angle = Math.acos(dot) * pc.math.RAD_TO_DEG;
+
+            if (angle > 5) {
+                const resultAngle = clockWise * Math.min(angle, 30) * dt * 200
+                entity.rigidbody.applyTorque(new pc.Vec3(0, resultAngle, 0));
+            }
+        }
 
         if (entity.animation) {
             const isIdle = force.equals(pc.Vec3.ZERO);
